@@ -16,11 +16,13 @@
   "license": "MIT",
   "pi": {
     "extensions": [
-      "./.pi/extensions/superpowers.ts",
-      "./.pi/extensions/commands.ts"
+      "./.pi/extensions/superpowers.ts"
     ],
     "skills": [
       "./skills"
+    ],
+    "prompts": [
+      "./prompts"
     ]
   },
   "peerDependencies": {
@@ -29,6 +31,7 @@
   "files": [
     ".pi",
     "skills",
+    "prompts",
     "tests",
     "README.md",
     "LICENSE"
