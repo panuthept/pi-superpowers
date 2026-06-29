@@ -16,7 +16,8 @@
   "license": "MIT",
   "pi": {
     "extensions": [
-      "./.pi/extensions/superpowers.ts"
+      "./.pi/extensions/superpowers.ts",
+      "./.pi/extensions/commands.ts"
     ],
     "skills": [
       "./skills"
