@@ -66,34 +66,38 @@ Follow this priority order. Explicit user preference always beats observed files
 
 1. **Check your instructions for a declared worktree directory preference.** If the user has already specified one, use it without asking.
 
-2. **Check for an existing project-local worktree directory:**
+2. **Check for an existing sibling worktree directory.** Look for worktrees created by prior runs:
    ```bash
-   ls -d .worktrees 2>/dev/null     # Preferred (hidden)
-   ls -d worktrees 2>/dev/null      # Alternative
+   repo_root=$(git rev-parse --show-toplevel)
+   ls -d "$repo_root/../"* 2>/dev/null | head -5
    ```
-   If found, use it. If both exist, `.worktrees` wins.
+   If the user has an established convention (e.g. `../<feature-name>`), match it.
 
-3. **If there is no other guidance available**, default to `.worktrees/` at the project root.
+3. **If there is no other guidance available**, default to a sibling directory of the repo root, named after the branch (slashes replaced with `-`):
+   ```bash
+   repo_root=$(git rev-parse --show-toplevel)
+   branch_name=$(git branch --show-current)
+   safe_name=$(echo "$branch_name" | tr '/' '-')
+   path="$(dirname "$repo_root")/$safe_name"
+   ```
+   
+   For example, repo at `/Users/me/projects/tau` on branch `feat/foo` → worktree at `/Users/me/projects/feat-foo`.
 
-#### Safety Verification (project-local directories only)
+   This avoids scattering worktree files inside the repo (no .gitignore needed, no accidental commits).
 
-**MUST verify directory is ignored before creating worktree:**
+#### Safety Verification
 
-```bash
-git check-ignore -q .worktrees 2>/dev/null || git check-ignore -q worktrees 2>/dev/null
-```
-
-**If NOT ignored:** Add to .gitignore, commit the change, then proceed.
-
-**Why critical:** Prevents accidentally committing worktree contents to repository.
+Sibling directories (outside the repo) don't need `.gitignore` checks — they can't be tracked. Skip this step.
 
 #### Create the Worktree
 
 ```bash
-# Determine path based on chosen location
-path="$LOCATION/$BRANCH_NAME"
+repo_root=$(git rev-parse --show-toplevel)
+branch_name=$(git branch --show-current)
+safe_name=$(echo "$branch_name" | tr '/' '-')
+path="$(dirname "$repo_root")/$safe_name"
 
-git worktree add "$path" -b "$BRANCH_NAME"
+git worktree add "$path" -b "$branch_name"
 cd "$path"
 ```
 
@@ -147,11 +151,9 @@ Ready to implement <feature-name>
 | In a submodule | Treat as normal repo (Step 0 guard) |
 | Native worktree tool available | Use it (Step 1a) |
 | No native tool | Git worktree fallback (Step 1b) |
-| `.worktrees/` exists | Use it (verify ignored) |
-| `worktrees/` exists | Use it (verify ignored) |
-| Both exist | Use `.worktrees/` |
-| Neither exists | Check instruction file, then default `.worktrees/` |
-| Directory not ignored | Add to .gitignore + commit |
+| `.worktrees/` or `worktrees/` exists (legacy) | Use it for backward compat, but prefer sibling path |
+| No existing worktree convention | Default to sibling dir: `../<branch-name>` (slashes → dashes) |
+| Sibling path conflicts with real project | Warn and ask for explicit path |
 | Permission error on create | Sandbox fallback, work in place |
 | Tests fail during baseline | Report failures + ask |
 | No package.json/Cargo.toml | Skip dependency install |
@@ -168,10 +170,10 @@ Ready to implement <feature-name>
 - **Problem:** Creating a nested worktree inside an existing one
 - **Fix:** Always run Step 0 before creating anything
 
-### Skipping ignore verification
+### Skipping ignore verification (project-local only)
 
-- **Problem:** Worktree contents get tracked, pollute git status
-- **Fix:** Always use `git check-ignore` before creating project-local worktree
+- **Problem:** Worktree contents inside the repo can get tracked, pollute git status
+- **Fix:** Sibling worktrees avoid this entirely. For legacy project-local worktrees, verify with `git check-ignore`.
 
 ### Assuming directory location
 
@@ -189,7 +191,7 @@ Ready to implement <feature-name>
 - Create a worktree when Step 0 detects existing isolation
 - Use `git worktree add` when you have a native worktree tool (e.g., `EnterWorktree`). This is the #1 mistake — if you have it, use it.
 - Skip Step 1a by jumping straight to Step 1b's git commands
-- Create worktree without verifying it's ignored (project-local)
+- Create a sibling worktree that overlaps with an existing project path
 - Skip baseline test verification
 - Proceed with failing tests without asking
 
