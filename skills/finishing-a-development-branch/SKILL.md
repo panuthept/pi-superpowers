@@ -123,7 +123,15 @@ git branch -d <feature-branch>
 ```bash
 # Push branch
 git push -u origin <feature-branch>
+
+# Create PR (requires GitHub CLI)
+gh pr create \
+  --title "<descriptive-title>" \
+  --body "<description>" \
+  --base <base-branch>
 ```
+
+If the user asks for a PR message, compose it before calling `gh pr create`.
 
 **Do NOT clean up worktree** — user needs it alive to iterate on PR feedback.
 
