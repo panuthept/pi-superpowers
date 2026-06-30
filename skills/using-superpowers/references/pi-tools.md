@@ -12,7 +12,7 @@ Skills speak in actions ("dispatch a subagent", "create a todo", "read a file").
 | Search file contents | `grep` when active; otherwise `bash` with `rg`/`grep` |
 | Find files by name | `find` or `bash` with shell globs |
 | List files and subdirectories | `ls` when active; otherwise `bash` with `ls` |
-| Dispatch a subagent (`Subagent (general-purpose):` template) | Use an installed subagent tool such as `subagent` from `pi-subagents` if available |
+| Dispatch a subagent (`Subagent (general-purpose):` template) | Use the `Agent` tool from `@tintinweb/pi-subagents` if installed |
 | Task tracking ("create a todo", "mark complete") | Use an installed todo/task tool if available, otherwise track tasks in the plan or `TODO.md` |
 
 ## Skills
@@ -21,7 +21,7 @@ Pi discovers skills from configured skill directories and installed Pi packages.
 
 ## Subagents
 
-Pi core does not ship a standard subagent tool. The `pi-subagents` package is a strong optional companion and provides a `subagent` tool with single-agent, chain, parallel, async, forked-context, and resume/status workflows. If no subagent tool is available, do not fabricate `Task` calls; execute sequentially in the current session or explain that the optional subagent capability is not installed.
+Pi core does not ship a standard subagent tool. The `@tintinweb/pi-subagents` package is a strong optional companion and provides an `Agent` tool with single-agent, chain, parallel, async, forked-context, and resume/status workflows. If no subagent tool is available, do not fabricate `Task` calls; execute sequentially in the current session or explain that the optional subagent capability is not installed.
 
 ## Task lists
 
