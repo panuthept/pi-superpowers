@@ -9,6 +9,8 @@ Execute plan by dispatching a fresh implementer subagent per task, a task review
 
 **Why subagents:** You delegate tasks to specialized agents with isolated context. By precisely crafting their instructions and context, you ensure they stay focused and succeed at their task. They should never inherit your session's context or history — you construct exactly what they need. This also preserves your own context for coordination work.
 
+**Track in plan file too:** Each implementer subagent toggles `- [ ]` → `- [x]` in the plan file for its task's checkboxes before committing. The widget shows checkbox progress alongside SDD ledger progress — both stay in sync.
+
 **Core principle:** Fresh subagent per task + task review (spec + quality) + broad final review = high quality, fast iteration
 
 **Narration:** between tool calls, narrate at most one short line — the

@@ -35,9 +35,12 @@ Subagent (general-purpose):
     1. Implement exactly what the task specifies
     2. Write tests (following TDD if task says to)
     3. Verify implementation works
-    4. Commit your work
-    5. Self-review (see below)
-    6. Report back
+    4. Toggle the plan file checkboxes for this task: find `openspec/plans/*.md`
+       (the plan file for this project), locate the `### Task N:` section for
+       your task number, and change every `- [ ]` inside that section to `- [x]`.
+    5. Commit your work (the toggle is part of the same commit as the code)
+    6. Self-review (see below)
+    7. Report back
 
     Work from: [directory]
 
@@ -101,6 +104,10 @@ Subagent (general-purpose):
     - Did I follow TDD if required?
     - Are tests comprehensive?
     - Is the test output pristine (no stray warnings or noise)?
+
+    **Plan tracking:**
+    - Did I toggle ALL `- [ ]` checkboxes under this task's `### Task N:` heading to `- [x]`?
+    - Did I verify the plan file toggle is included in my commit?
 
     If you find issues during self-review, fix them now before reporting.
 

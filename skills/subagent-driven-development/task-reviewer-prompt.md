@@ -85,6 +85,9 @@ Subagent (general-purpose):
       "nice to haves"
     - **Misunderstood:** right feature built the wrong way, wrong problem
       solved
+    - **Plan checkboxes:** Does the diff update `openspec/plans/` — are the
+      `- [ ]` checkboxes under this task's `### Task N:` heading toggled to
+      `- [x]`? If not, flag as a missing requirement.
 
     If a requirement cannot be verified from this diff alone (it lives in
     unchanged code or spans tasks), report it as a ⚠️ item instead of
