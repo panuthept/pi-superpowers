@@ -155,20 +155,40 @@ If you find issues, fix them inline. No need to re-review — just fix and move 
 
 ## Execution Handoff
 
-After saving the plan, offer execution choice:
+After saving the plan, ask about workspace preference:
 
-**"Plan complete and saved to `openspec/plans/<filename>.md`. Two execution options:**
+> **"Plan complete and saved to `openspec/plans/<filename>.md`."**
+> **"Work in the current directory (current branch) or an isolated git worktree on a new branch?"**
 
-**1. Subagent-Driven (recommended)** - I dispatch a fresh subagent per task, review between tasks, fast iteration
+### If current directory
 
-**2. Inline Execution** - Execute tasks in this session using executing-plans, batch execution with checkpoints
+Report that the plan is ready and let the user trigger execution:
 
-**Which approach?"**
+```
+Plan saved to openspec/plans/<topic_name>.md.
+Run /implement <topic_name> to start Subagent-Driven execution.
+```
 
-**If Subagent-Driven chosen:**
-- **REQUIRED SUB-SKILL:** Use superpowers:subagent-driven-development
-- Fresh subagent per task + two-stage review
+### If isolated worktree
 
-**If Inline Execution chosen:**
-- **REQUIRED SUB-SKILL:** Use superpowers:executing-plans
-- Batch execution with checkpoints for review
+**Announce:** "I'm using the using-git-worktrees skill to set up an isolated workspace."
+
+**Follow the `using-git-worktrees` process (Steps 0-3):**
+1. Detect existing isolation — skip if already in a worktree
+2. Create the worktree on a new branch
+3. Project setup + verify clean baseline
+
+**Move the spec and plan into the worktree:**
+```bash
+mv openspec/changes/<topic_name>/design.md <worktree-path>/openspec/changes/<topic_name>/design.md
+mv openspec/plans/<topic_name>.md <worktree-path>/openspec/plans/<topic_name>.md
+```
+
+**Report:**
+```
+Worktree ready at <path> on branch <name>.
+Spec and plan are waiting there.
+Please cd <path> and run /implement <topic_name> to start execution.
+```
+
+**Do not offer Subagent-Driven or Inline execution** — the user needs to be in the worktree for that.
