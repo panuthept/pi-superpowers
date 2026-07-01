@@ -158,14 +158,35 @@ If you find issues, fix them inline. No need to re-review — just fix and move 
 After saving the plan, ask about workspace preference:
 
 > **"Plan complete and saved to `openspec/plans/<filename>.md`."**
-> **"Work in the current directory (current branch) or an isolated git worktree on a new branch?"**
+> **"Work in the current directory or an isolated git worktree?"**
+
+A new feature branch is always created either way.
 
 ### If current directory
 
-Report that the plan is ready and let the user trigger execution:
+**Create a new branch from the base branch (main/master):**
 
+Check for existing dirty state first:
+```bash
+if [ -n "$(git status --porcelain)" ]; then
+  echo "Uncommitted changes exist. Stash or commit before branching."
+fi
 ```
-Plan saved to openspec/plans/<topic_name>.md.
+
+Then:
+```bash
+git checkout -b feat/<topic-name>
+```
+
+Commit the spec and plan on the new branch:
+```bash
+git add openspec/changes/<topic_name>/design.md openspec/plans/<topic_name>.md
+git commit -m "spec+plan: <topic description>"
+```
+
+**Report:**
+```
+Plan saved to openspec/plans/<topic_name>.md on branch feat/<topic-name>.
 Run /implement <topic_name> to start Subagent-Driven execution.
 ```
 
@@ -182,6 +203,13 @@ Run /implement <topic_name> to start Subagent-Driven execution.
 ```bash
 mv openspec/changes/<topic_name>/design.md <worktree-path>/openspec/changes/<topic_name>/design.md
 mv openspec/plans/<topic_name>.md <worktree-path>/openspec/plans/<topic_name>.md
+```
+
+**Commit spec and plan on the worktree branch:**
+```bash
+cd <worktree-path>
+git add openspec/changes/<topic_name>/design.md openspec/plans/<topic_name>.md
+git commit -m "spec+plan: <topic description>"
 ```
 
 **Report:**
